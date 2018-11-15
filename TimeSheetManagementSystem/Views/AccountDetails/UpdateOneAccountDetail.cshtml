@@ -1,0 +1,564 @@
+﻿<div class="row">
+    <div class="col-md-offset-2  col-md-8">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <div class="panel-title" id="panelHeading">Create Account Detail for </div>
+                <div class="btn-group pull-right">
+
+                </div>
+            </div>
+            <div class="panel-body">
+                <form id="dataForm" role="form" class="form-horizontal">
+                    <!--Div form group -->
+                    <div class="form-group">
+                        <label class="control-label  col-md-3" for="dayInput">Day</label>
+                        <div class="col-md-4">
+                            <select type="text" id="dayInput" name="dayInput" class="form-control font-bold"
+                                    placeholder="e.g. Monday, Tuesday">
+                                <option>Monday</option>
+                                <option>Tuesday</option>
+                                <option>Wednesday</option>
+                                <option>Thursday</option>
+                                <option>Friday</option>
+                                <option>Saturday</option>
+                                <option>Sunday</option>
+                            </select>
+                        </div>
+
+                    </div>
+                    <!--Start time form group-->
+                    <!--
+        IDs
+        startTimeHourInput
+        startTimeMinuteInput
+        startTimeMeridiem
+    -->
+                    <div class="form-group">
+                        <label class="control-label col-md-3" for="startTimeInput">Start Time</label>
+                        <div class="col-md-7" id='startTimeInput'>
+                            <div class='input-group date' id='startTimeInput'>
+                                <input class="col-md-3" type='number' id='startTimeHourInput' onchange="handleHourChange(this)" />
+                                <span class="col-md-1">:</span>
+                                <input type='number' class="col-md-3" id='startTimeMinuteInput' onchange="handleMinuteChange(this)" />
+                                <select id="startTimeMeridiem">
+                                    <option>AM</option>
+                                    <option>PM</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <p style="font-size: 9px" class="control-label col-md-3">12.00 am in start time = 0000hrs</p>
+                    </div>
+                    <!--
+        IDs
+        endTimeHourInput
+        endTimeMinuteInput
+        endTimeMeridiem
+    -->
+                    <div class="form-group">
+                        <label class="control-label col-md-3" for="endTimeInput">End Time</label>
+                        <div class="col-md-7" id='endTimeInput'>
+                            <div class='input-group date' id='endTimeInput'>
+                                <input class="col-md-3" type='number' id='endTimeHourInput' onchange="handleHourChange(this)" />
+                                <span class="col-md-1">:</span>
+                                <input type='number' class="col-md-3" id='endTimeMinuteInput' onchange="handleMinuteChange(this)" />
+                                <select id="endTimeMeridiem">
+                                    <option>AM</option>
+                                    <option>PM</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <p style="font-size: 9px" class="control-label col-md-3">12.00 am in end time = 2400hrs, 12.01am in end time = 0001hrs</p>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-md-3" for="startDateInput">Effective Start Date</label>
+                        <div class="col-md-7" id='startDateInput'>
+                            <div class='input-group date' id='startDateInput'>
+                                <input type='text' class="form-control" id='startDateInputBox' />
+                                <p style="font-size:12px">day/month/year(number) e.g. 01/02/1900 or 1/2/1900</p>
+                                <p></p>
+                                <button type="button" class="btn btn-primary" data-toggle="button" aria-pressed="false" autocomplete="off" id="startDateInputBtn">
+                                    <span class="glyphicon glyphicon-calendar"></span>
+                                </button>
+                            </div>
+                        </div>
+                        <label class="control-label col-md-3"></label>
+                        <div class="col-md-7">
+                            <p style="font-size:12px">Click on year in DatePicker to change year</p>
+                            <div id='startDatePicker'></div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label col-md-3" for="endDateInput">Effective End Date</label>
+                        <div class="col-md-7" id='endDateInput'>
+                            <div class='input-group date' id='endDateInput'>
+
+                                <input type='text' class="form-control" id='endDateInputBox' />
+                                <p style="font-size:12px">day/month/year(number) e.g. 01/02/1900 or 1/2/1900</p>
+                                <p></p>
+                                <button type="button" class="btn btn-primary" data-toggle="button" aria-pressed="false" autocomplete="off" id="endDateInputBtn">
+                                    <span class="glyphicon glyphicon-calendar"></span>
+                                </button>
+                            </div>
+                        </div>
+                        <label class="control-label col-md-3"></label>
+                        <div class="col-md-7">
+                            <p style="font-size:12px">Click on year in DatePicker to change year</p>
+                            <div id='endDatePicker' for="endDateInputBox"></div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-md-3" for="visibilityInput">Visibility</label>
+                        <div class="col-md-4">
+                            <input type="checkbox" name="visibilityInput" id="visibilityInput" checked>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-md-3"></label>
+                        <div class="col-md-9">
+                            <div class="pull-right">
+                                <input type="button" class="btn btn-primary" value="Delete" id="deleteButton" />
+                                <input type="button" class="btn btn-primary" value="Save" id="saveButton" />
+                                <a href="" id="aspBtn">Cancel</a>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </form>
+            </div><!-- end of div element which has the class="panel-body" -->
+        </div><!-- end of the div element which has the class="panel" -->
+    </div><!-- end of the div element which as the  class="col-md-offset-2 col-sm-8"-->
+</div><!-- end of div element with class="row" -->
+
+<link href="~/lib/bootstrap-switch/dist/css/bootstrap3/bootstrap-switch.css" rel="stylesheet">
+<script src="~/lib/bootstrap-datepicker/js/bootstrap-datepicker.js" type="text/javascript"></script>
+<script src="~/lib/bootstrap-switch/dist/js/bootstrap-switch.js" type="text/javascript"></script>
+<script>
+    var customerName = localStorage.getItem("currentCustomer");
+    var accountId = getAccountIdFromAddressBar();
+    var detailId = getDetailIdFromAddressBar();
+    $("#aspBtn").attr("href", "/AccountDetails/ManageAccountDetailsForOneCustomerAccount/" + accountId);
+    loadThisAccountDetail();
+    var startDate;
+    var endDate;
+    var startDatePickerShow = false;
+    var endDatePickerShow = false;
+    function getAccountIdFromAddressBar() {
+        var urlArray = window.location.href.split('/');
+        var id = urlArray[urlArray.length - 1].split(",")[0];
+        return id;
+    };
+    function getDetailIdFromAddressBar() {
+        var urlArray = window.location.href.split('/');
+        var id = urlArray[urlArray.length - 1].split(",")[1];
+        return id;
+    }
+    //change time input
+    function handleMinuteChange(input) {
+        if (input.value < 0) input.value = 0;
+        else if (input.value > 59) input.value = 59;
+        else if (input.value < 10) input.value = "0" + input.value.replace("0", "")
+        else input = 0;
+    }
+    function handleHourChange(input) {
+        if (input.value < 1) input.value = 1;
+        else if (input.value > 12) input.value = 12;
+        else input = 0;
+    }
+    function checkDate(date, checkForEmpty) {
+        //date is the date string input in the input boxes
+        //make sure all if statements return returnVal
+        var returnVal;
+        var format = /[!@@#()$%^&*_+\-=\[\]{};':"\\|,.<>\?]/;
+        var letters = /^[A-Za-z]+$/;
+        //console.log(checkForEmpty);
+        //console.log(date.replace(/\s+/g, ''));
+        //We test all of them individually to generate appropriate error messages
+        if (date.replace(/\s+/g, '') === "" && checkForEmpty == true) { //test for empty str
+            returnVal = {
+                message: "No Effective Start Date detected (Empty!). Date must be in day/month/year, with 2 '/'", //success or failure
+                status: "failure"
+            }
+            return returnVal;
+        }
+        else if (date.replace(/\s+/g, '') === "" && checkForEmpty == false) {
+            date = date.replace(/\s+/g, '');
+            returnVal = {
+                message: "", //success or failure
+                status: "success"
+            }
+            return returnVal;
+        }
+        else if (format.test(date)) { //test for special characters, except slash
+            returnVal = {
+                message: "Special characters are not allowed in date", //success or failure
+                status: "failure"
+            }
+            return returnVal;
+        }
+        else if (letters.test(date)) { //test for letters
+            returnVal = {
+                message: "Alphabet characters detected in date, please use numerical values with 2 '/' instead.", //success or failure
+                status: "failure"
+            }
+            return returnVal;
+        }
+        else if (date.split("/").length < 3 || date.split("/").length > 3) { //make sure there are 3 sets of numbers
+            returnVal = {
+                message: "Incorrect Date format. Date must be in day/month/year, with 2 '/'", //success or failure
+                status: "failure"
+            }
+            return returnVal;
+        }
+        else { //only numbers with correct number of backslashes left
+            //alert("y gay");
+            /*
+             * Need to test for:
+             * invalid year (sql uses datetime2, 0001-01-01 through 9999-12-31)
+             * Check if date is valid (using moment)
+             * Convert to appropriate format
+             * Number of numbers (002/001/1999 vs 02/01/1999)
+             * input could be in chinese, hence cannot be detected
+             */
+            date = date.replace(/\s+/g, '');
+            var onlyAllowed = /^[0-9\/]+$/;
+            if (!onlyAllowed.test(date)) {
+                returnVal = {
+                    message: "Date must only include numbers and '/'. E.g 01/01/1999", //success or failure
+                    status: "failure"
+                }
+                return returnVal;
+            }
+
+
+            if (0 < date.split("/")[0].length && date.split("/")[0].length < 2) {
+                //put 0 behind for them
+                //check day
+                date = "0" + date.split("/")[0] + "/" +
+                    date.split("/")[1] + "/" +
+                    date.split("/")[2]
+
+            }
+
+
+            if (0 < date.split("/")[1].length && date.split("/")[1].length < 2) {
+                //put 0 behind for them
+                //check month
+                date = date.split("/")[0] + "/" +
+                    "0" + date.split("/")[1] + "/" +
+                    date.split("/")[2]
+            }
+            if (0 < date.split("/")[2].length && date.split("/")[2].length < 4) {
+                //put 0 behind for them
+                //check year
+                var newyear = date.split("/")[2];
+                var i;
+                for (i = date.split("/")[2].length; i < 4; i++) {
+                    alert(i);
+                    newyear = "0" + newyear;
+                }
+                date = date.split("/")[0] + "/" +
+                    date.split("/")[1] + "/" +
+                    newyear
+            }
+
+
+            //check if year is within valid range
+            if (parseInt(date.split("/")[2]) === 0) {
+                returnVal = {
+                    message: "Year must be greater than 0!", //success or failure
+                    status: "failure"
+                }
+                return returnVal;
+
+            }
+            var dateObj = moment(date, 'DD/MM/YYYY', true);
+            //console.log(dateObj._d);
+            if (dateObj._d == "Invalid Date") {
+                returnVal = {
+                    message: "Date or month is not within valid range! Please use date picker to select a date", //success or failure
+                    status: "failure"
+                }
+                return returnVal;
+            }
+            else {
+                returnVal = {
+                    message: date, //success or failure
+                    status: "success"
+                }
+                return returnVal;
+
+            }
+
+        }
+
+
+    }
+    function getTimeInMinute(hour, minute, meridiem, isEndDate) {
+        //12 am = 0 minutes from start of day, 12 pm is 720 minutes from start of day
+        //
+        if (hour > 12) { hour = 12 }
+        else if (hour < 1) { hour = 1 }
+        if (minute > 59) { minute = 59 }
+        else if (minute < 0) { minute = 0 }
+        var meridiemInMinutes = 0;
+        if (meridiem === "AM") {
+            if (hour == 12) {
+                if (isEndDate && minute == 0) { hour = 24; }
+                else { hour = 0; }
+                //basically if users puts 12 am in end date, end date is treated as end of day
+                //12 am in end date =  2400h
+            }
+        }
+        else { meridiemInMinutes = 720; }
+        if (meridiem === "PM" && hour == 12) { //12 pm; without this if statement, 12 pm will be = 12*60 + 720 minutes, which is incorrect
+            hour = 0;
+
+        }
+        //console.log(hour); console.log(meridiemInMinutes); console.log(minute);
+        //The things that doesn't obey the below formula is: 12am and 12pm
+        //for 12pm, we treat the number of hours as 0 instead of 12 to apply the forumula
+        //for 12am, if it is end time, treat it as 2400hrs (no minutes allowed; 12.30am would mean 0030hrs)
+        //for 12am, if it is start time, treat hours as 0 to apply the forumula
+        //AM = 0 minutes       PM = 720 minutes
+        var returnTime = eval(hour * 60) + eval(meridiemInMinutes) + eval(minute);
+        console.log(isEndDate + "," + returnTime);
+        return returnTime;
+
+    }
+    function loadThisAccountDetail() {
+        $loadDetailHandler = jQuery.ajax({
+            type: 'GET',
+            url: '/API/AccountDetails/' + accountId + "," + detailId
+        });
+        $loadDetailHandler.done(function (data, textStatus, jqXHR) {
+            /*
+             * Object returnedAccountDetail = new
+            {
+                id = accountDetailObj.AccountDetailId,
+                day = daysInWeek[accountDetailObj.DayOfWeekNumber],
+                startTime = startTime,
+                endTime = endTime,
+                startDate = accountDetailObj.EffectiveStartDate.ToString("dd/MM/yyyy"),
+                //dt2 != null ? dt2.Value.ToString("yyyy-MM-dd hh:mm:ss") : "n/a"
+                //Check if the end date object is null. If null, endDate = "n/a". Else, endDate = date in dd/MM/yyyy
+                endDate = accountDetailObj.EffectiveEndDate != null ? accountDetailObj.EffectiveEndDate.Value.ToString("dd/MM/yyyy") : "n/a",
+                visible = accountDetailObj.IsVisible
+            };
+            */
+            $("#dayInput").val(data.day);
+            $("#startTimeHourInput").val(data.startTime.split(".")[0]);
+            $("#startTimeMinuteInput").val(data.startTime.split(".")[1].replace(/\D/g, ''));//remove all non numbers
+            //console.log(data.startTime);
+            $("#endTimeHourInput").val(data.endTime.split(".")[0]);
+            $("#endTimeMinuteInput").val(data.endTime.split(".")[1].replace(/\D/g, ''));//remove all non numbers
+            $("#startDateInputBox").val(data.startDate);
+            if (data.endDate != "n/a") {
+                $("#endDateInputBox").val(data.endDate);
+            }
+            $("#visibilityInput").bootstrapSwitch("state", data.visible);
+            $("#startTimeMeridiem").val(data.startTime.split(".")[1].replace(/[0-9]/g, '').toUpperCase());
+            $("#endTimeMeridiem").val(data.endTime.split(".")[1].replace(/[0-9]/g, '').toUpperCase());
+
+
+        });
+        $loadDetailHandler.fail(function (data, textStatus, jqXHR) {
+            console.dir(data); console.dir(textStatus); console.dir(jqXHR);
+            new Noty({
+                text: "Invalid account detail",
+                type: 'error',
+                dismissQueue: true,
+                layout: 'center'
+            }).show()
+        });
+
+    }
+    $("#panelHeading").text("Update Account Detail for " + customerName);
+    $("#visibilityInput").bootstrapSwitch();
+    $('#startDateInputBtn').click(function () {
+        //console.log($("#startDateInputBtn").attr("aria-pressed"));
+        //console.log(startDatePickerShow);
+        if (startDatePickerShow) {
+            //console.log("hiding");
+            startDatePickerShow = false;
+            $('#startDatePicker').hide();
+        }
+        else {
+
+            startDatePickerShow = true;
+            //console.log(startDatePickerShow);
+            $('#startDatePicker').show();
+
+        }
+    })
+    $('#startDatePicker').datepicker({
+        pickTime: false,
+        dateFormat: 'MM/dd/YYYY',
+        changeYear: true,
+        autoclose: true
+    }).on("changeDate", function (event) {
+        //$("#startDateInputBox").val($('#startDatePicker').datepicker("getDate"));
+        console.dir(event.date);
+        $("#startDateInputBox").val(findDate(event.date));
+    });// click date event
+    $('#startDatePicker').hide();
+
+    $('#endDatePicker').datepicker({
+        pickTime: false,
+        format: 'dd-MM-yyyy',
+        changeYear: true,
+        autoclose: true
+    }).on("changeDate", function (event) {
+        $("#endDateInputBox").val(findDate(event.date));
+    });//change date event
+    $('#endDatePicker').hide();
+    $('#endDateInputBtn').click(function () {
+        //console.log($("#startDateInputBtn").attr("aria-pressed"));
+        if (endDatePickerShow) {
+            $('#endDatePicker').hide();
+            endDatePickerShow = false;
+        }
+        else {
+            $('#endDatePicker').show();
+            endDatePickerShow = true;
+
+        }
+    });
+    function findDate(date) { //retrieve only required date information from datepicker
+        date = String(date);
+        if ((("JanFebMarAprMayJunJulAugSepOctNovDec".indexOf(date.split(" ")[1]) / 3)
+            + 1).toString().length > 1) {
+            return date.split(" ")[2] + "/" + (("JanFebMarAprMayJunJulAugSepOctNovDec".indexOf(date.split(" ")[1]) / 3)
+                + 1) + "/" + date.split(" ")[3]
+        }
+        else {
+            //console.log((("JanFebMarAprMayJunJulAugSepOctNovDec".indexOf(date.split(" ")[1]) / 3)
+            //+ 1).length);
+            return date.split(" ")[2] + "/0" + (("JanFebMarAprMayJunJulAugSepOctNovDec".indexOf(date.split(" ")[1]) / 3)
+                + 1) + "/" + date.split(" ")[3]
+
+        }
+        //return date.split(" ")[2] + " " + date.split(" ")[1] + " "+date.split(" ")[3];
+
+    }
+    $('#saveButton').on('click', function () {
+        //console.log("Saving");
+        //get user input first
+        var accountId = getAccountIdFromAddressBar();
+        var detailId = getDetailIdFromAddressBar();
+        var startDate = $("#startDateInputBox").val() //mm/dd/yyyy
+        var endDate = $("#endDateInputBox").val() //mm/dd/yyyy
+
+        //Check for valid input
+        var numeric = /^[0-9]+$/;
+        var checkStartDate = checkDate(startDate, true);
+        var checkEndDate = checkDate(endDate, false);
+        if (checkStartDate.status === "failure") {
+            new Noty({
+                text: checkStartDate.message + " (start date)", type: 'error',
+                layout: 'center',
+                template: '<div class="noty_message"><span class="noty_text"></span>'
+            }).show();
+            return;
+
+        }
+        else if (checkEndDate.status === "failure") {
+            new Noty({
+                text: checkEndDate.message + " (end date)", type: 'error',
+                layout: 'center',
+                template: '<div class="noty_message"><span class="noty_text"></span>'
+            }).show();
+            return;
+
+        }
+        else {
+            startDate = checkStartDate.message;
+            endDate = checkEndDate.message;
+
+        }
+
+        //-ve value from date1.diff(date2) means date1 is before date2
+        //if date2 is empty it'll also be -ve value
+        var startDateMoment = moment(startDate, 'DD/MM/YYYY', true);
+        var endDateMoment = moment(endDate, 'DD/MM/YYYY', true);
+        if ($("#startTimeHourInput").val().replace(/\s+/g, "") == "" || $("#endTimeHourInput").val().replace(/\s+/g, "") == ""
+            || $("#startTimeMinuteInput").val().replace(/\s+/g, "") == "" || $("#endTimeMinuteInput").val().replace(/\s+/g, "") == "") {
+            new Noty({
+                text: "Start time and end time must not be empty!", type: 'error',
+                layout: 'center',
+                template: '<div class="noty_message"><span class="noty_text"></span>'
+            }).show();
+            return;
+
+        }
+        if (startDateMoment.diff(endDateMoment) > 0) {
+            new Noty({
+                text: "Effective End Date is earlier than Effective Start Date.", type: 'error',
+                layout: 'center',
+                template: '<div class="noty_message"><span class="noty_text"></span>'
+            }).show();
+            return;
+
+        }
+        var startTime = getTimeInMinute($("#startTimeHourInput").val(), $("#startTimeMinuteInput").val(), $("#startTimeMeridiem").val(),false)
+        var endTime = getTimeInMinute($("#endTimeHourInput").val(), $("#endTimeMinuteInput").val(), $("#endTimeMeridiem").val(),true)
+        var dayOfWeek = $("#dayInput").val();
+        if (startTime >= endTime) {
+            new Noty({
+                text: "Effective Start Time should be earlier than Effective End Time.", type: 'error',
+                layout: 'center',
+                template: '<div class="noty_message"><span class="noty_text"></span>'
+            }).show();
+            return;
+        }
+        //Create an object to store the variables above
+        //parameter_name: variable_name_above
+        var webFormData = {
+            accountName: customerName,
+            dayOfWeek: dayOfWeek,
+            accountId: accountId,
+            startDate: startDate,
+            endDate: endDate,
+            startTime: startTime,
+            endTime: endTime,
+            visibility: $("#visibilityInput").bootstrapSwitch("state")
+        };
+        console.dir(webFormData);
+        saveDetailInfo(webFormData, detailId);
+
+    });
+    function saveDetailInfo(webFormData, detailId) {
+        console.log("Detail Id is " + detailId);
+        $addDetailHandler = jQuery.ajax({
+            type: 'PUT',
+            url: '/API/AccountDetails/' + detailId,
+            data: webFormData
+        })
+        $addDetailHandler.done(function (data, textStatus, jqXHR) {
+            new Noty({
+                text: data.message, type: 'success',
+                dismissQueue: true,
+                layout: 'center'
+            }).show();
+        });
+        $addDetailHandler.fail(function (data, textStatus, jqXHR) {
+            console.log('executed when runtime error on server side occurred');
+            console.dir(data);
+            console.dir(textStatus);
+            console.dir(jqXHR);
+            new Noty({
+                text: data.responseJSON.message,
+                type: 'error',
+                dismissQueue: true,
+                layout: 'center'
+            }).show()
+        });
+        //console.dir(webFormData);
+    };
+
+</script>

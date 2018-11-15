@@ -1,0 +1,138 @@
+﻿<div class="panel panel-primary">
+    <div class="panel-heading">
+        <span id="panelHeading">
+            Manage Account Detail for
+        </span>
+    </div>
+</div>
+
+<p style="font-size: 12px">Dates are in dd/mm/yyyy</p>
+<div class="panel  panel-primary">
+    <div class="panel-heading">
+        <div class="btn-group pull-right">
+            <a href="#" id="aspBtn" class="btn btn-default btn-group-lg ">Add New Account Detail</a>
+        </div>
+    </div>
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-md-12">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Day </th>
+                            <th>Start Time</th>
+                            <th>End Time</th>
+                            <th>Effective Start Date</th>
+                            <th id="endDateColumn">Effective End Date</th>
+                            <th>Visible</th>
+                            <th>&nbsp;</th>
+                        </tr>
+                    </thead>
+                    <tbody id="userTableBody"></tbody>
+                </table>
+
+            </div>
+        </div>
+
+    </div><!-- end of Panel Body -->
+</div><!-- end of Main Panel -->
+<script>
+    //Get customer account id in url to get account detail list
+    var g_customerId = getIdFromAddressBar();
+    function getIdFromAddressBar() {
+        var urlArray = window.location.href.split('/');
+        var id = urlArray[urlArray.length - 1];
+        return id;
+    };
+    //Get customer account name
+    $loadCustomerDataHandler = jQuery.ajax({
+        type: 'GET',
+        url: '/API/CustomerAccounts/accountName/' + g_customerId,
+    });
+    $loadCustomerDataHandler.done(function (data, textStatus, jqXHR) {
+        console.dir(data); console.dir(textStatus); console.log(jqXHR);
+        $("#panelHeading").text("Manage Details for " + data[0].accountName);
+        localStorage.setItem("currentCustomer",data[0].accountName);
+    });
+    $loadCustomerDataHandler.fail(function (data, textStatus, jqXHR) {
+        console.log("Failed");
+        console.dir(data); console.dir(textStatus); console.log(jqXHR);
+    });
+
+    //ajax -  get method to retrieve account detail 
+    function getAndLoadDataForUser() {
+        $loadDetailDataHandler = jQuery.ajax({
+            type: 'GET',
+            url: '/API/AccountDetails/' + g_customerId,
+        });
+        $loadDetailDataHandler.done(function (data, textStatus, jqXHR) {
+            console.dir(data); console.dir(textStatus); console.log(jqXHR);
+            $("#aspBtn").attr("href", "/AccountDetails/CreateOneAccountDetailForCustomerAccount/" + g_customerId);
+            loadTable(data); //load data into table for user
+
+        });
+        $loadDetailDataHandler.fail(function (data, textStatus, jqXHR) {
+            console.log("Failed");
+            console.dir(data); console.dir(textStatus); console.log(jqXHR);
+        });
+    }
+    //function loadTable(data)
+    function loadTable(data) {
+        //getCustomerDetails();
+        //getAccountRates();
+        $tableBodyElement = $('#userTableBody');
+        $tableBodyElement.empty();
+        
+            try {
+                //for (i = rateList.length-1; i > 0; i--) {
+                for (index = 0; index < data.length; index++) {
+
+                    var detailObj = data[index]; //account Details object
+                    //Create rows
+                    /*
+                     * Details will be displayed in this manner
+                     * Day | Start Time | End Time | Effective Start Date | Effective End Date | Visible
+                     */
+                    $rowElement = $('<tr></tr>');
+                    $cellElement = $('<td></td>', { text: detailObj.day }).css({textAlign: 'center'});
+                    $rowElement.append($cellElement);
+                    $cellElement = $('<td></td>', { text: detailObj.startTime }).css({textAlign: 'center'});
+                    $rowElement.append($cellElement);
+                    $cellElement = $('<td></td>', { text: detailObj.endTime }).css({textAlign: 'center'});
+                    $rowElement.append($cellElement);
+                    $cellElement = $('<td></td>', { text: detailObj.startDate }).css({ textAlign: 'center' });
+                    $rowElement.append($cellElement);
+                    $cellElement = $('<td></td>', { text: detailObj.endDate }).css({ textAlign: 'center' });
+                    $rowElement.append($cellElement);
+                    if (detailObj.visible === true) {
+                        $cellElement = $('<td><span class="glyphicon glyphicon-ok"></span></td>');
+                    }
+                    else {
+                        $cellElement = $('<td><span class="glyphicon glyphicon-remove"></span></td>');
+
+                    }
+                    $rowElement.append($cellElement);
+                    $hyperLinkElement = $('<a>Update</a>').attr('href', '/AccountDetails/UpdateOneAccountDetail/' + g_customerId + ',' + detailObj.id);
+                    $hyperLinkElement.addClass('btn btn-primary');
+                    $cellElement = $('<td></td>');
+                    $cellElement.append($hyperLinkElement);
+
+                    $rowElement.append($cellElement);
+                    $tableBodyElement.append($rowElement);
+
+                }
+            }
+            catch (exception) {
+                console.dir("Error");
+                console.dir(exception);
+            }
+    }
+
+    //constantly reupdate table of values
+    setInterval(function () { getAndLoadDataForUser() }, 3000);
+
+    $(document).ready(function () {
+        getAndLoadDataForUser();
+    })
+    
+</script>

@@ -1,0 +1,196 @@
+﻿<div class="panel panel-primary">
+    <div class="panel-heading">
+        <span id="panelHeading">
+            Manage Rates for
+        </span>
+    </div>
+</div>
+<div class="panel panel-primary">
+    <div class="panel-heading">
+        <p id="currentRate">
+            Current rate:
+        </p>
+    </div>
+</div>
+
+    <p style="font-size: 12px">Dates are in dd/mm/yyyy</p>
+    <div class="panel  panel-primary">
+        <div class="panel-heading">
+            <div class="btn-group pull-right">
+                <a href="/CustomerAccounts/CreateAccountRate" id="aspBtn" class="btn btn-default btn-group-lg ">Add New Rate</a>
+            </div>
+        </div>
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-md-12">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Rate Per Hour</th>
+                                <th>Effective Start Date</th>
+                                <!--<th id="endDateColumn">Effective End Date</th>-->
+                                <th>&nbsp;</th>
+                            </tr>
+                        </thead>
+                        <tbody id="userTableBody"></tbody>
+                    </table>
+
+                </div>
+            </div>
+
+        </div><!-- end of Panel Body -->
+    </div><!-- end of Main Panel -->
+    <script>
+        // Get Customer Id
+        var g_customerId = getIdFromAddressBar();
+        function getIdFromAddressBar() {
+            var urlArray = window.location.href.split('/');
+            var id = urlArray[urlArray.length - 1];
+            return id;
+        };
+        $("#aspBtn").attr("href", "/CustomerAccounts/CreateAccountRate/" + g_customerId);
+        console.log(g_customerId);
+        var customerName;
+        var oldRateList;
+        var rateList;
+        var toggleHideBtn = 1;
+        //console.log(g_customerId);
+        getCustomerDetails();
+        /*
+        $('#hideColumn').on('click', function () {
+            if (toggleHideBtn == 1) {
+                $('#endDateColumn').hide();
+                $('.redWarning').css({ backgroundColor: 'white', color: 'white' });
+                $('.nonredWarning').css({ backgroundColor: 'white', color: 'white' });
+                toggleHideBtn = 2;
+            }
+            else {
+                toggleHideBtn = 1;
+                $('#endDateColumn').show();
+                $('.redWarning').css({ backgroundColor: 'red', color: 'black' });
+                $('.nonredWarning').css({ backgroundColor: 'white', color: 'black' });
+            }
+        });
+        */
+        function getCustomerDetails() {
+            $loadCustomerDataHandler = jQuery.ajax({
+                type: 'GET',
+                url: '/API/CustomerAccounts/accountName/' + g_customerId,
+            });
+            $loadCustomerDataHandler.done(function (data, textStatus, jqXHR) {
+                //console.log("Success");
+                //console.dir(data); console.dir(textStatus); console.log(jqXHR);
+                customerName = data[0].accountName;
+                $("#panelHeading").text("Manage Rates for " + customerName);
+                //document.cookie = "currentCustomer=" + customerName;
+                localStorage.setItem("currentCustomer", customerName);
+                getAccountRates();
+            });
+            $loadCustomerDataHandler.fail(function (data, textStatus, jqXHR) {
+                console.log("Failed");
+                console.dir(data); console.dir(textStatus); console.log(jqXHR);
+            });
+
+        }
+        function getAccountRates() {
+            $loadCustomerDataHandler = jQuery.ajax({
+                type: 'GET',
+                url: '/API/AccountRates/customerId=' + g_customerId,
+            });
+            $loadCustomerDataHandler.done(function (data, textStatus, jqXHR) {
+                //console.log("Success");
+                //console.dir(data); console.dir(textStatus); console.log(jqXHR);
+                rateList = data;
+                for (var i = 0; i < rateList.length; i++) {
+                    rateList[i].effectiveStartDate = moment(rateList[i].effectiveStartDate.split("T")[0], 'YYYY-MM-DD', true)
+                        .format("DD/MM/YYYY");
+                    if (rateList[i].effectiveEndDate != null) {
+                        rateList[i].effectiveEndDate = moment(rateList[i].effectiveEndDate.split("T")[0], 'YYYY-MM-DD', true)
+                            .format("DD/MM/YYYY");
+                    }
+
+                }
+                //console.dir(rateList);
+                loadTable();
+            });
+            $loadCustomerDataHandler.fail(function (data, textStatus, jqXHR) {
+                console.log("Failed");
+                console.dir(data); console.dir(textStatus); console.log(jqXHR);
+            });
+
+
+        }
+        function loadTable() {
+            //getCustomerDetails();
+            //getAccountRates();
+            $tableBodyElement = $('#userTableBody');
+            var nextDate;
+            var currDate = moment().startOf('day');
+            var selectRate;//which date to pick from, to choose to use for account rate
+            if (oldRateList != rateList) { //compare both arrays, update only when needed
+                //console.dir(oldRateList);
+                //console.dir(rateList);
+                $tableBodyElement.empty();
+                try {
+                    //for (i = rateList.length-1; i > 0; i--) {
+                    for (index = 0; index < rateList.length; index++) {
+
+                        var rateObj = rateList[index]; //account rate object
+                        //Create rows
+                        $rowElement = $('<tr></tr>');
+                        $cellElement = $('<td></td>', { text: rateObj.accountRate });
+                        $rowElement.append($cellElement);
+                        $cellElement = $('<td></td>', { text: rateObj.effectiveStartDate}).css({
+                            textAlign: 'center'
+                        });
+                        var currStartDateMoment = moment(rateObj.effectiveStartDate, 'DD/MM/YYYY', true);
+                        //var currEndDateMoment = moment(rateObj.effectiveEndDate, 'DD/MM/YYYY', true);
+                        //console.log(currStartDateMoment.diff(currDate));
+                        if (currStartDateMoment.diff(currDate) <= 0 && selectRate == null) {
+                            /*
+                            if (rateObj.effectiveEndDate != null) {
+                                if (currEndDateMoment.diff(currDate) >= 0) {
+                                    selectRate = rateObj.accountRate;
+                                    console.log(selectRate);
+
+                                }
+
+                            }
+                            else {*/
+                                selectRate = rateObj.accountRate;
+                                console.log(selectRate);
+
+                            //}
+
+                        }
+                        $rowElement.append($cellElement);
+                        
+                        //console.log(rateObj.effectiveEndDate);
+                        $rowElement.append($cellElement);
+                        $tableBodyElement.append($rowElement);
+                        //console.log("loaded");
+                        //Now for buttons
+
+                        $hyperLinkElement = $('<a>Update</a>').attr('href', '/CustomerAccounts/UpdateAccountRate/' + rateObj.accountRateId);
+                        $hyperLinkElement.addClass('btn btn-primary');
+                        $cellElement = $('<td></td>');
+                        $cellElement.append($hyperLinkElement);
+
+                        $rowElement.append($cellElement);
+                        $tableBodyElement.append($rowElement);
+
+                    }
+                }
+                catch (exception) {
+                    console.dir("hmm");
+                    console.dir(rateObj);
+                    console.dir(exception);
+                }
+                oldRateList = rateList;
+                $('#currentRate').text("Current rate: " + selectRate);
+            }
+        }
+        setInterval(function () {
+            getCustomerDetails();
+        }, 3000);
+    </script>

@@ -1,0 +1,130 @@
+﻿<div class="panel  panel-primary">
+    <div class="panel-heading">
+        Manage Customer Accounts
+        <div class="btn-group pull-right">
+            <a asp-action="CreateCustomerAccount" asp-controller="CustomerAccounts" class="btn btn-default btn-group-lg ">Add Customer Account</a>
+        </div>
+    </div>
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-md-12">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Account Name</th>
+                            <th># Of Rates Data</th>
+                            <th># Of Instructors</th>
+                            <th>Comments</th>
+                            <th>Visibility</th>
+                            <th>Updated By</th>
+                            <th>Updated At</th>
+                            <th>&nbsp;</th>
+                            <th>&nbsp;</th>
+                            <th>&nbsp;</th>
+                        </tr>
+                    </thead>
+                    <tbody id="userTableBody"></tbody>
+                </table>
+
+            </div>
+        </div>
+
+    </div><!-- end of Panel Body -->
+</div><!-- end of Main Panel -->
+<script>
+    var oldCustomerAccountsList;
+    $(document).ready(function () {
+        loadCustomerData();
+    })
+    function loadCustomerData() {
+        //Note: jQuery.ajax(..) is also often written is $.ajax(..)
+        jQuery.ajax({
+            url: '/API/CustomerAccounts',
+            method: 'GET',
+            dataType: 'json',
+            cache: false,
+        }).done(function (data, textStatus, jqXHR) {
+            var customerAccountsList = data;
+            if (JSON.stringify(oldCustomerAccountsList) != JSON.stringify(customerAccountsList)) {
+                var accountId = '';
+                var accountName = '';
+                var noOfRatesData = '';
+                var noOfInstructors = '';
+                var comments = '';
+                var updatedBy = '';
+                var updatedAt = '';
+                var visibility;
+                var $tableElement = null;
+                var $cellElement = null;
+                var $rowElement = null;
+
+                $tableBodyElement = $('#userTableBody');
+                $tableBodyElement.empty();
+
+                for (index = 0; index < customerAccountsList.length; index++) {
+
+                    customerAccount = customerAccountsList[index];
+                    accountName = customerAccount.accountName;
+                    noOfRatesData = customerAccount.noOfRatesData;
+                    noOfInstructors = customerAccount.noOfInstructors;
+                    comments = customerAccount.comments;
+                    updatedBy = customerAccount.updatedBy;
+                    updatedAt = customerAccount.updatedAt;
+                    accountId = customerAccount.accountId;
+                    visibility = customerAccount.visibility;
+
+                    //Create rows
+                    $rowElement = $('<tr></tr>');
+                    $cellElement = $('<td></td>', { text: accountName });
+                    $rowElement.append($cellElement);
+                    $cellElement = $('<td></td>', { text: noOfRatesData });
+                    $rowElement.append($cellElement);
+                    $cellElement = $('<td></td>', { text: noOfInstructors });
+                    $rowElement.append($cellElement);
+                    $cellElement = $('<td></td>', { text: comments });
+                    $rowElement.append($cellElement);
+                    if (visibility === true) {
+                        $cellElement = $('<td><span class="glyphicon glyphicon-ok"></span></td>');
+                    }
+                    else {
+                        $cellElement = $('<td><span class="glyphicon glyphicon-remove"></span></td>');
+
+                    }
+                    $rowElement.append($cellElement);
+                    $cellElement = $('<td></td>', { text: updatedBy });
+                    $rowElement.append($cellElement);
+                    //moment(rateList[i].effectiveStartDate.split("T")[0], 'YYYY-MM-DD', true)
+                    $cellElement = $('<td></td>', { text: moment(updatedAt.split("T")[0], 'YYYY-MM-DD', true).format("DD/MM/YYYY") });
+                    $rowElement.append($cellElement);
+
+                    $hyperLinkElement = $('<a>Update General Info</a>').attr('href', '/CustomerAccounts/UpdateCustomerAccount/' + accountId);
+                    $hyperLinkElement.addClass('btn btn-primary');
+                    $cellElement = $('<td></td>');
+                    $cellElement.append($hyperLinkElement);
+                    $rowElement.append($cellElement);
+
+                    $hyperLinkElement = $('<a>Manage rate/hour</a>').attr('href', '/CustomerAccounts/ManageAccountRates/' + accountId);
+                    $hyperLinkElement.addClass('btn btn-primary');
+                    $cellElement = $('<td></td>');
+                    $cellElement.append($hyperLinkElement);
+                    $rowElement.append($cellElement);
+
+                    $hyperLinkElement = $('<a>Manage Account Details</a>').attr('href', '/AccountDetails/ManageAccountDetailsForOneCustomerAccount/' + accountId);
+                    $hyperLinkElement.addClass('btn btn-primary');
+                    $cellElement = $('<td></td>');
+                    $cellElement.append($hyperLinkElement);
+                    $rowElement.append($cellElement);
+
+                    $tableBodyElement.append($rowElement);
+                }//end of for loop.
+
+
+                oldCustomerAccountsList = customerAccountsList;
+
+            }//end if
+
+            }//end of JavaScript anonymous function
+            )//end of the done() method;
+    }//end of loadCustomerData();
+    setInterval(function () { loadCustomerData() }, 3000);
+</script>

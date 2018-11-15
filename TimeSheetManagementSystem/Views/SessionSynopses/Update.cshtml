@@ -1,0 +1,250 @@
+﻿<div class="container">
+    <div class="col-md-offset-2 col-md-8">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <div class="panel-title">Create Session Sypnosis</div>
+            </div>
+            <div class="panel-body">
+                <form id="dataForm" role="form" class="form-horizontal">
+                    <div class="form-group">
+                        <label class="control-label col-md-3" for="sessionSynopsisNameInput">Session Sypnosis Name</label>
+                        <div class="col-md-4">
+                            <input type="text" id="sessionSynopsisNameInput" class="form-control input-group-sm"
+                                   maxlength="100" placeholder="Session Sypnosis Name" value="" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-md-3" for="visibilityInput">Visibility</label>
+                        <div class="col-md-4">
+                            <input type="checkbox" name="visibilityInput" id="visibilityInput" checked>
+                        </div>
+                    </div>
+                        <div class="form-group">
+                            <label class="control-label col-md-3"></label>
+                            <div class="col-md-9">
+                                <div class="pull-right">
+                                    <input type="button" class="btn btn-primary" value="Delete" id="deleteButton" />
+                                    <input type="button" class="btn btn-primary" value="Save" id="saveButton" />
+                                    <a class="btn btn-default" asp-action="Index" asp-controler="SessionSynopses">Cancel</a>
+                                </div>
+                            </div>
+                        </div>
+
+                </form>
+            </div><!-- end of div element which has the class="panel-body" -->
+        </div><!-- end of the div element which has the class="panel" -->
+    </div><!-- end of the div element which has class="col-md-offset-2 col-md-8" -->
+</div><!-- end of div element which has the class="container" -->
+<!--Have to manually import the js and css, even though I added it under Bower -->
+<link href="~/lib/bootstrap-switch/dist/css/bootstrap3/bootstrap-switch.css" rel="stylesheet">
+<script src="~/lib/bootstrap-switch/dist/js/bootstrap-switch.js" type="text/javascript"></script>
+
+
+<script>
+    $('#visibilityInput').bootstrapSwitch();
+    window.sessionSynopsesId = getSessionSynopsisIdFromAddressBar();
+    //I need a document scope variable, window.originalRoleName because
+    //there are complications to use the UserManager to remove a role from a user and add a role to a user.
+    //The reason is, the method are asynchronous.
+    //A lot of spaggheti coding were involved just to get the RoleName.
+    function getSessionSynopsisIdFromAddressBar() {
+        //Get userid from the url string in the browser's address bar
+        var urlArray = window.location.href.split('/');
+        var sessionSynopsesId = urlArray[urlArray.length - 1];
+        return sessionSynopsesId;
+    };
+    getSessionSypnosisDetails();
+    function getSessionSypnosisDetails(){
+        $loadSessionDataHandler = jQuery.ajax({
+            type: 'GET',
+            url: '/API/SessionSynopses/' + window.sessionSynopsesId,
+        })
+        $loadSessionDataHandler.done(function (data, textStatus, jqXHR) {
+            
+            console.log(data);
+            
+            var sessionSypnosis = data;
+            //Copy out the course information
+            sessionSypnosisName = sessionSypnosis.sessionSypnosisName;
+            sessionSypnosisVisibility = sessionSypnosis.isVisible;
+            $('#sessionSynopsisNameInput').val(sessionSypnosisName);
+            $('#visibilityInput').bootstrapSwitch("state", sessionSypnosisVisibility);
+        }//end of JavaScript anonymous function
+        )//end of the done() method;
+
+        $loadSessionDataHandler.fail(function (data, textStatus, jqXHR) {
+            console.log(textStatus);
+            console.log(data);
+            console.log(jqXHR);
+            new Noty({
+                text: data.responseJSON.message, type: 'error',
+                layout: 'center',
+                template: '<div class="noty_message"><span class="noty_text"></span>'
+            }).show();
+        });//end of $loadCourseDataHandler.fail()
+
+    }
+    function WebFormData(inSessionSynopsisName, inVisibility) {
+        this.sessionSynopsisName = inSessionSynopsisName;
+        this.visibility = inVisibility;
+        console.dir("Visibility:" + this.visibility);
+    }
+    var existInTS = false;
+    $('#saveButton').on('click', function () {
+        var format = /[!@@#$%^&*_+\-=\[\]{};:"\\|,.<>\/?]/;
+        var format2 = /^[0-9A-Za-z' ]+$/;
+        if ($('#sessionSynopsisNameInput').val().replace(/\s+/g, '') === "" || format.test($('#sessionSynopsisNameInput').val()) ||
+            !format2.test($('#sessionSynopsisNameInput').val()) ) {
+            if ($('#sessionSynopsisNameInput').val().replace(/\s+/g, '') === "") {
+                new Noty({
+                    text: "No characters detected. Minimum length for Session Synopsis is 1 character", type: 'error',
+                    dismissQueue: true,
+                    layout: 'center'
+                }).show();
+            }
+            else if (format.test($('#sessionSynopsisNameInput').val())) {
+                new Noty({
+                    text: "Special characters detected. Only text, spaces and brackets are allowed", type: 'error',
+                    dismissQueue: true,
+                    layout: 'center'
+                }).show();
+
+            }
+            else {
+                new Noty({
+                    text: "Please input only Alphabets and numbers", type: 'error',
+                    dismissQueue: true,
+                    layout: 'center'
+                }).show();
+
+            }
+        }
+        else {
+            var collectedSessionSynopsisName = $('#sessionSynopsisNameInput').val();
+            var collectedVisibility = $('#visibilityInput').bootstrapSwitch("state");
+            webFormDataInString = JSON.stringify(new WebFormData(collectedSessionSynopsisName, collectedVisibility));
+            console.dir(new WebFormData(collectedSessionSynopsisName, collectedVisibility));
+            console.dir(webFormDataInString);
+            $addUserHandler = jQuery.ajax({
+                type: 'PUT',
+                url: '/API/SessionSynopses/' + window.sessionSynopsesId,
+                data: new WebFormData(collectedSessionSynopsisName, collectedVisibility)
+            })
+            $addUserHandler.done(function (data, textStatus, jqXHR) {
+                new Noty({
+                    text: data.message, type: 'success',
+                    dismissQueue: true,
+                    layout: 'center'
+                }).show();
+            });
+            $addUserHandler.fail(function (data, textStatus, jqXHR) {
+                console.log('executed when runtime error on server side occurred');
+                console.dir(data);
+                console.dir(textStatus);
+                console.dir(jqXHR);
+                new Noty({
+                    text: data.responseJSON.message,
+                    type: 'error',
+                    dismissQueue: true,
+                    layout: 'center'
+                }).show()
+            });
+        }
+    });
+    $('#deleteButton').on('click', function () {
+        $checkTimeSheet = jQuery.ajax({
+            type: 'GET',
+            url: '/API/TimeSheetDetails/sessionname=' + $("#sessionSynopsisNameInput").val()
+        })//end of jQuery.ajax() call
+        $checkTimeSheet.done(function (data, textStatus, jqXHR) {
+            console.log(data);
+            existInTS = data;
+
+        });
+        if (existInTS) {
+            var n = new Noty({
+                text: 'Do you really want to delete? This session synopsis record has been used by some timesheet details.',
+                buttons: [
+                    Noty.button('Delete', 'btn btn-success', function () {
+                        console.log('Deleted');
+                        n.close();
+                        deleteSessionSypnosis();
+                        $('body').fadeOut(2000, redirectPage);
+                    }),
+
+                    Noty.button('No', 'btn btn-error', function () {
+                        console.log('Delete Cancelled');
+                        n.close();
+                    })
+                ]
+            }).show();
+
+         }
+        else {
+            var n = new Noty({
+                text: 'Do you really want to delete?',
+                buttons: [
+                    Noty.button('Delete', 'btn btn-success', function () {
+                        console.log('Deleted');
+                        n.close();
+                        deleteSessionSypnosis();
+                        $('body').fadeOut(50, redirectPage);
+                    }),
+
+                    Noty.button('No', 'btn btn-error', function () {
+                        console.log('Delete Cancelled');
+                        n.close();
+                    })
+                ]
+            }).show();
+        }
+    //end of $deleteSessionSynopsesHandler.done()
+
+    });//$('#deleteButton').on('click', function () { ... }
+    function deleteSessionSypnosis() {
+        
+        //
+        $deleteSessionSynopsisHandler = jQuery.ajax({
+            type: 'DELETE',
+            url: '/API/SessionSynopses/' + window.sessionSynopsesId
+        })//end of jQuery.ajax() call
+        $deleteSessionSynopsisHandler.done(function (data, textStatus, jqXHR) {
+            /*
+            $noty =
+                new Noty({
+                    text: data.message, type: 'success',
+                    layout: 'center',
+                    template: '<div class="noty_message" style="height:50px;"><span class="noty_text"></span>',
+                    buttons: [
+                        {
+                            addClass: 'btn btn-primary', text: 'Ok', onClick: function ($noty) {
+                                $noty.close();
+                                $('body').fadeOut(2000, redirectPage);
+                            }
+                        }
+                    ]
+                });//end of noty()
+            $noty.show();//end of Noty()
+            */
+        });
+        //end of $deleteSessionSynopsesHandler.done()
+
+        $deleteSessionSynopsisHandler.fail(function (data, textStatus, jqXHR) {
+            console.log(data);
+            new Noty({
+                text: data.responseJSON.message, type: 'error',
+                dismissQueue: true,
+                layout: 'center'
+            });//end of Noty()
+        });
+
+    }
+
+    function redirectPage() {
+        location.replace('/SessionSynopses/Index');
+    }
+</script>
+
+
+
+

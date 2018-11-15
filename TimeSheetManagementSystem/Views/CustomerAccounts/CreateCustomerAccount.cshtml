@@ -1,0 +1,478 @@
+﻿<div class="container">
+    <div class="col-md-offset-2 col-md-8">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <div class="panel-title">Create Customer Account</div>
+            </div>
+            <div class="panel-body">
+                <form id="dataForm" role="form" class="form-horizontal">
+                    <div class="form-group">
+                        <label class="control-label col-md-3" for="customerAccountNameInput">Account Name</label>
+                        <div class="col-md-4">
+                            <input type="text" id="customerAccountNameInput" class="form-control input-group-sm"
+                                   maxlength="100" placeholder="Customer Account Name" value="" />
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label col-md-3" for="startDateInput">Effective Start Date</label>
+                        <div class="col-md-7" id='startDateInput'>
+                            <div class='input-group date' id='startDateInput'>
+                                <input type='text' class="form-control" id='startDateInputBox' />
+                                <p style="font-size:12px">day/month/year(number) e.g. 01/02/1900 or 1/2/1900</p>
+                                <p></p>
+                                <button type="button" class="btn btn-primary" data-toggle="button" aria-pressed="false" autocomplete="off" id="startDateInputBtn">
+                                    <span class="glyphicon glyphicon-calendar"></span>
+                                </button>
+                            </div>
+                        </div>
+                        <label class="control-label col-md-3"></label>
+                        <div class="col-md-7">
+                            <p style="font-size:12px">Click on year in DatePicker to change year</p>
+                            <div id='startDatePicker'></div>
+                        </div>
+                    </div>
+                    <!--
+    <div class="form-group">
+        <label class="control-label col-md-3" for="endDateInput">Effective End Date</label>
+        <div class="col-md-7" id='endDateInput'>
+            <div class='input-group date' id='endDateInput'>
+
+                <input type='text' class="form-control" id='endDateInputBox' />
+                <p style="font-size:12px">day/month/year(number) e.g. 01/02/1900 or 1/2/1900</p>
+                <p></p>
+                <button type="button" class="btn btn-primary" data-toggle="button" aria-pressed="false" autocomplete="off" id="endDateInputBtn">
+                    <span class="glyphicon glyphicon-calendar"></span>
+                </button>
+            </div>
+        </div>
+        <label class="control-label col-md-3"></label>
+        <div class="col-md-7">
+            <p style="font-size:12px">Click on year in DatePicker to change year</p>
+            <div id='endDatePicker' for="endDateInputBox"></div>
+        </div>
+        </div>
+        -->
+                    <div class="form-group">
+                        <label class="control-label col-md-3" for="ratePerHourInput">Rate Per Hour (SGD per Hour)</label>
+                        <div class="col-md-4">
+                            <input type="text" id="ratePerHourInput" class="form-control input-group-sm"
+                                   maxlength="100" placeholder="Rate Per Hour (SGD per Hour)" value="" />
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label col-md-3" for="commentInput">Comments</label>
+                        <div class="col-md-4">
+                            <textarea type="text" id="commentInput" class="form-control input-group-sm"
+                                      maxlength="4000" placeholder="4000 characters maximum" value=""></textarea>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label col-md-3" for="visibilityInput">Visibility</label>
+                        <div class="col-md-4">
+                            <input type="checkbox" name="visibilityInput" id="visibilityInput" checked>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label col-md-3"></label>
+                        <div class="col-md-9">
+                            <div class="pull-right">
+                                <input type="button" class="btn btn-primary" value="Save" id="saveButton" />
+                                <a class="btn btn-default" asp-action="ManageCustomerAccounts" asp-controler="CustomerAccounts">Cancel</a>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </form>
+            </div><!-- end of div element which has the class="panel-body" -->
+        </div><!-- end of the div element which has the class="panel" -->
+    </div><!-- end of the div element which has class="col-md-offset-2 col-md-8" -->
+</div><!-- end of div element which has the class="container" -->
+<!--Have to manually import the js and css, even though I added it under Bower -->
+<link href="~/lib/bootstrap-switch/dist/css/bootstrap3/bootstrap-switch.css" rel="stylesheet">
+<script src="~/lib/bootstrap-switch/dist/js/bootstrap-switch.js" type="text/javascript"></script>
+<script src="~/lib/bootstrap-datepicker/js/bootstrap-datepicker.js" type="text/javascript"></script>
+<script>
+    var startDatePickerShow = false;
+    var endDatePickerShow = false;
+
+    //set up datepicker, and their click functions
+    $('#startDateInputBtn').click(function () {
+        //console.log($("#startDateInputBtn").attr("aria-pressed"));
+        //console.log(startDatePickerShow);
+        if (startDatePickerShow) {
+            //console.log("hiding");
+            startDatePickerShow = false;
+            $('#startDatePicker').hide();
+        }
+        else {
+
+            startDatePickerShow = true;
+            //console.log(startDatePickerShow);
+            $('#startDatePicker').show();
+
+        }
+    })
+            $('#startDatePicker').datepicker({
+                pickTime: false,
+                dateFormat: 'MM/dd/YYYY',
+                changeYear: true,
+                autoclose: true
+            }).on("changeDate", function (event) {
+                //$("#startDateInputBox").val($('#startDatePicker').datepicker("getDate"));
+                console.dir(event.date);
+                $("#startDateInputBox").val(findDate(event.date));
+            });// click date event
+            $('#startDatePicker').hide();
+            /*
+            $('#endDatePicker').datepicker({
+                pickTime: false,
+                format: 'dd-MM-yyyy',
+                changeYear: true,
+                autoclose: true
+            }).on("changeDate", function (event) {
+                $("#endDateInputBox").val(findDate(event.date));
+            });//change date event
+            $('#endDatePicker').hide();
+    $('#endDateInputBtn').click(function () {
+        //console.log($("#startDateInputBtn").attr("aria-pressed"));
+        if (endDatePickerShow) {
+            $('#endDatePicker').hide();
+            endDatePickerShow = false;
+        }
+        else {
+            $('#endDatePicker').show();
+            endDatePickerShow = true;
+
+        }
+    });*/
+
+    //setup datepicker events
+
+    $("#visibilityInput").bootstrapSwitch();
+    //$("#visibilityInput").bootstrapSwitch("state");
+
+    $('#saveButton').on('click', function () {
+        //console.log("Saving");
+        //get user input first
+        var accountName = $("#customerAccountNameInput").val();
+        var startDate = $("#startDateInputBox").val() //mm/dd/yyyy
+        var endDate = "" //empty string because end date is deprecated feature
+        var ratePerHour = $("#ratePerHourInput").val() //SGD Per Hour
+        var comment = $("#commentInput").val() //4000 words maximum
+        var visibility = $("#visibilityInput").bootstrapSwitch("state"); //true/false
+        var format2 = /^[0-9A-Za-z' ]+$/;
+
+        //Check for valid input
+        if (accountName.replace(/\s+/g, '') === "") {
+            new Noty({
+                text: "No Account Name given", type: 'error',
+                layout: 'center',
+                template: '<div class="noty_message"><span class="noty_text"></span>'
+            }).show();
+            return;
+        }
+        if (!format2.test(accountName)) {
+            new Noty({
+                text: "Invalid characters found in account name. Only alphabets, spaces, numbers and single quotation mark is allowed.", type: 'error',
+                layout: 'center',
+                template: '<div class="noty_message"><span class="noty_text"></span>'
+            }).show();
+            return;
+
+        }
+        //console.log(startDate);
+        var numeric = /^[0-9.]+$/;
+        var checkStartDate = checkDate(startDate, true);
+        var checkEndDate = checkDate(endDate, false);
+        if (checkStartDate.status === "failure") {
+            new Noty({
+                text: checkStartDate.message + " (start date)", type: 'error',
+                layout: 'center',
+                template: '<div class="noty_message"><span class="noty_text"></span>'
+            }).show();
+            return;
+
+        }
+        else if (checkEndDate.status === "failure") {
+            new Noty({
+                text: checkStartDate.message + " (end date)", type: 'error',
+                layout: 'center',
+                template: '<div class="noty_message"><span class="noty_text"></span>'
+            }).show();
+            return;
+
+        }
+        else {
+            startDate = checkStartDate.message;
+            endDate = checkEndDate.message;
+
+        }
+        if (ratePerHour.replace(/\s+/g, '') === "") {
+            new Noty({
+                text: "No Rate Per Hour given", type: 'error',
+                layout: 'center',
+                template: '<div class="noty_message"><span class="noty_text"></span>'
+            }).show();
+            return;
+
+        }
+        if (!numeric.test(ratePerHour)) {
+            new Noty({
+                text: "Rate per Hour must be numeric, and more than or equals to 0", type: 'error',
+                layout: 'center',
+                template: '<div class="noty_message"><span class="noty_text"></span>'
+            }).show();
+            return;
+        }
+        else {
+            if (ratePerHour.split('.').length > 2) {
+                console.log(ratePerHour.split('.').length > 2);
+                new Noty({
+                    text: "Rate per Hour can only contain 1 dot.", type: 'error',
+                    layout: 'center',
+                    template: '<div class="noty_message"><span class="noty_text"></span>'
+                }).show();
+                return;
+            }
+
+        }
+        //-ve value from date1.diff(date2) means date1 is before date2
+        //if date2 is empty it'll also be -ve value
+        var startDateMoment = moment(startDate, 'DD/MM/YYYY', true);
+        var endDateMoment = moment(endDate, 'DD/MM/YYYY', true);
+        if (startDateMoment.diff(endDateMoment) > 0) {
+            new Noty({
+                text: "Effective End Date is earlier than Effective Start Date.", type: 'error',
+                layout: 'center',
+                template: '<div class="noty_message"><span class="noty_text"></span>'
+            }).show();
+            return;
+
+        }
+        
+        //Create an object to store the variables above
+        //parameter_name: variable_name_above
+        var webFormData = {
+            accountName: accountName,
+            startDate: startDate,
+            endDate: endDate,
+            ratePerHour: ratePerHour,
+            comment: comment,
+            visibility: visibility
+        };
+        var customerWebFormData = {
+            accountName: accountName,
+            comment: comment,
+            isVisible: visibility
+        };
+        console.dir(customerWebFormData)
+        var accountRateWebFormData = {
+            accountName: accountName,
+            startDate: startDate,
+            endDate: endDate,
+            ratePerHour: ratePerHour
+        };
+        customerWebFormDataInString = JSON.stringify(customerWebFormData);
+        rateWebFormDataInString = JSON.stringify(accountRateWebFormData);
+        $addCustomerHandler = jQuery.ajax({
+            type: 'POST',
+            url: '/API/CustomerAccounts',
+            data: customerWebFormData
+        })
+        $addCustomerHandler.done(function (data, textStatus, jqXHR) {
+            new Noty({
+                text: data.message, type: 'success',
+                dismissQueue: true,
+                layout: 'center'
+            }).show();
+            $addRateHandler = jQuery.ajax({
+                type: 'POST',
+                url: '/API/AccountRates',
+                data: accountRateWebFormData
+            })
+            $addRateHandler.done(function (data, textStatus, jqXHR) {
+                new Noty({
+                    text: data.message, type: 'success',
+                    dismissQueue: true,
+                    layout: 'center'
+                }).show();
+            });
+            $addRateHandler.fail(function (data, textStatus, jqXHR) {
+                console.log('executed when runtime error on server side occurred');
+                console.dir(data);
+                console.dir(textStatus);
+                console.dir(jqXHR);
+                new Noty({
+                    text: data.responseJSON.message,
+                    type: 'error',
+                    dismissQueue: true,
+                    layout: 'center'
+                }).show()
+            });
+        });
+        $addCustomerHandler.fail(function (data, textStatus, jqXHR) {
+            console.log('executed when runtime error on server side occurred');
+            console.dir(data);
+            console.dir(textStatus);
+            console.dir(jqXHR);
+            new Noty({
+                text: data.responseJSON.message,
+                type: 'error',
+                dismissQueue: true,
+                layout: 'center'
+            }).show()
+        });
+        //console.dir(webFormData);
+    });
+    function findDate(date) { //retrieve only required date information from datepicker
+        date = String(date);
+        if ((("JanFebMarAprMayJunJulAugSepOctNovDec".indexOf(date.split(" ")[1]) / 3)
+            + 1).toString().length > 1) {
+            return date.split(" ")[2] + "/" + (("JanFebMarAprMayJunJulAugSepOctNovDec".indexOf(date.split(" ")[1]) / 3)
+                + 1) + "/" + date.split(" ")[3]
+        }
+        else {
+            //console.log((("JanFebMarAprMayJunJulAugSepOctNovDec".indexOf(date.split(" ")[1]) / 3)
+                //+ 1).length);
+            return date.split(" ")[2] + "/0" + (("JanFebMarAprMayJunJulAugSepOctNovDec".indexOf(date.split(" ")[1]) / 3)
+                + 1) + "/" + date.split(" ")[3]
+
+        }
+        //return date.split(" ")[2] + " " + date.split(" ")[1] + " "+date.split(" ")[3];
+
+    }
+    function checkDate(date, checkForEmpty) {
+        //date is the date string input in the input boxes
+        //make sure all if statements return returnVal
+        var returnVal;
+        var format = /[!@@#()$%^&*_+\-=\[\]{};':"\\|,.<>\?]/;
+        var letters = /^[A-Za-z]+$/;
+        //console.log(checkForEmpty);
+        //console.log(date.replace(/\s+/g, ''));
+        //We test all of them individually to generate appropriate error messages
+        if (date.replace(/\s+/g, '') === "" && checkForEmpty == true) { //test for empty str
+            returnVal = {
+                message: "No Effective Start Date detected (Empty!). Date must be in day/month/year, with 2 '/'", //success or failure
+                status: "failure"
+            }
+            return returnVal;
+        }
+        else if (date.replace(/\s+/g, '') === "" && checkForEmpty == false) {
+            console.log("yea");
+            date = date.replace(/\s+/g, '');
+            returnVal = {
+                message: "", //success or failure
+                status: "success"
+            }
+            return returnVal;
+        }
+        else if (format.test(date)) { //test for special characters, except slash
+            returnVal = {
+                message: "Special characters are not allowed in date", //success or failure
+                status: "failure"
+            }
+            return returnVal;
+        }
+        else if (letters.test(date)) { //test for letters
+            returnVal = {
+                message: "Alphabet characters detected in date, please use numerical values with 2 '/' instead.", //success or failure
+                status: "failure"
+            }
+            return returnVal;
+        }
+        else if (date.split("/").length < 3 || date.split("/").length > 3) { //make sure there are 3 sets of numbers
+            returnVal = {
+                message: "Incorrect Date format. Date must be in day/month/year, with 2 '/'", //success or failure
+                status: "failure"
+            }
+            return returnVal;
+        } 
+        else { //only numbers with correct number of backslashes left
+            //alert("y gay");
+            /*
+             * Need to test for:
+             * invalid year (sql uses datetime2, 0001-01-01 through 9999-12-31)
+             * Check if date is valid (using moment)
+             * Convert to appropriate format
+             * Number of numbers (002/001/1999 vs 02/01/1999)
+             * input could be in chinese, hence cannot be detected
+             */
+            date = date.replace(/\s+/g, '');
+            var onlyAllowed = /^[0-9\/]+$/;
+            if (!onlyAllowed.test(date)) {
+                returnVal = {
+                    message: "Date must only include numbers and '/'. E.g 01/01/1999", //success or failure
+                    status: "failure"
+                }
+                return returnVal;
+            }
+
+            
+            if (0 < date.split("/")[0].length && date.split("/")[0].length < 2 ){
+                //put 0 behind for them
+                //check day
+                date = "0" + date.split("/")[0] + "/" +
+                    date.split("/")[1] + "/" +
+                    date.split("/")[2]
+
+            }
+
+            
+            if (0 < date.split("/")[1].length && date.split("/")[1].length < 2) {
+                //put 0 behind for them
+                //check month
+                date = date.split("/")[0] + "/" +
+                    "0" + date.split("/")[1] + "/" +
+                    date.split("/")[2]
+            }
+            if (0 < date.split("/")[2].length && date.split("/")[2].length < 4) {
+                //put 0 behind for them
+                //check year
+                var newyear = date.split("/")[2];
+                var i;
+                for (i = date.split("/")[2].length; i < 4 ; i++) {
+                    alert(i);
+                    newyear = "0" + newyear;
+                }
+                date = date.split("/")[0] + "/" +
+                    date.split("/")[1] + "/" +
+                    newyear
+            }
+
+            
+            //check if year is within valid range
+            if (parseInt(date.split("/")[2]) === 0) {
+                returnVal = {
+                    message: "Year must be greater than 0!", //success or failure
+                    status: "failure"
+                }
+                return returnVal;
+
+            }
+            var dateObj = moment(date, 'DD/MM/YYYY', true);
+            //console.log(dateObj._d);
+            if (dateObj._d == "Invalid Date") { 
+                returnVal = {
+                    message: "Date or month is not within valid range! Please use date picker to select a date", //success or failure
+                    status: "failure"
+                }
+                return returnVal;
+            }
+            else {
+                returnVal = {
+                    message: date, //success or failure
+                    status: "success"
+                }
+                return returnVal;
+
+            }
+
+        }
+        
+
+    }
+</script>
